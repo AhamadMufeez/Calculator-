@@ -78,4 +78,12 @@ function hasDecimal(str) {
     const lastOperand = lastOperatorIndex === -1 ? str : str.substring(lastOperatorIndex + 1);
     return lastOperand.includes(".");
 }
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("/service-worker.js")
+      .then((reg) => console.log("SW registered:", reg.scope))
+      .catch((err) => console.log("SW failed:", err));
+  });
+}
 
