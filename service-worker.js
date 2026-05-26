@@ -3,11 +3,11 @@ const CACHE_NAME = "calculator-v1";
 // Files to cache (edit if your file names differ)
 const STATIC_ASSETS = [
   "/",
-  "/index.html",
-  "/style.css",
-  "/script.js",
-  "/manifest.json",
-  "/favicon.ico"
+  "./index.html",
+  "./style.css",
+  "./main.js",
+  "./manifest.json",
+  "./favicon.ico"
 ];
 
 // Install → cache everything
@@ -52,7 +52,7 @@ self.addEventListener("fetch", (event) => {
         })
         .catch(() => {
           // Optional fallback (if offline and not cached)
-          return caches.match("/index.html");
+          return caches.match("./index.html");
         });
     })
   );
