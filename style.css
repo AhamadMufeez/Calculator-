@@ -1,45 +1,242 @@
-body {
-    font-size: 15pt;
+/* ═══════════════════════════════════════════
+   Calculator — Design System
+   Aesthetic: Dark precision / hardware-inspired
+═══════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow:wght@300;600&display=swap');
+
+/* ── Tokens ── */
+:root {
+  --bg:          #0f0f17;
+  --surface:     #1a1a2e;
+  --surface-2:   #22223b;
+  --border:      #2d2d4a;
+
+  --num-bg:      #1e2035;
+  --num-hover:   #272840;
+  --num-active:  #303250;
+
+  --op-bg:       #1d2d44;
+  --op-hover:    #26384f;
+  --op-text:     #4fc3f7;
+
+  --fn-bg:       #231b2e;
+  --fn-hover:    #2e2440;
+  --fn-text:     #ce93d8;
+
+  --eq-bg:       #00695c;
+  --eq-hover:    #00796b;
+  --eq-text:     #e0f2f1;
+
+  --text:        #e8eaf6;
+  --text-dim:    #7986cb;
+  --error:       #ef5350;
+
+  --radius:      10px;
+  --radius-lg:   18px;
+  --gap:         8px;
+
+  --display-font: 'Share Tech Mono', monospace;
+  --ui-font:      'Barlow', sans-serif;
 }
 
+/* ── Reset & base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
- #heading {
- 	display:flex; 
-	background-color: #000000;
-	color: #FFFFFF;
-	align-items:center;
-	text-align: center;
-	width: 100%;
-	}
+html, body {
+  height: 100%;
+  background: var(--bg);
+  /* BUG FIX: was 15pt — unitless or rem is better for mobile */
+  font-size: 16px;
+  font-family: var(--ui-font);
+  color: var(--text);
+  /* prevent pull-to-refresh bounce on mobile WebView */
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
 
-#resultscreen {
-  width: 260px;
-  height: 20px;
-  margin: 20px auto;
-  padding: 10px;
-  border: 2px solid black;
-  background-color: lightblue;
+/* ── App shell — centers the card on larger screens ── */
+.app-shell {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+/* ── Header ── */
+/* BUG FIX: added justify-content so title is actually centred */
+.calc-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;   /* was missing → title floated left */
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  padding: 10px 0 6px;
+}
+
+.calc-title {
+  font-family: var(--display-font);
+  font-size: 13px;
+  letter-spacing: 0.3em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+
+.offline-badge {
+  position: absolute;
+  right: 0;
+  font-size: 11px;
+  color: var(--error);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.offline-badge.visible { opacity: 1; }
+
+/* ── Display ── */
+.display {
+  width: 100%;
+  max-width: 320px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px 18px 10px;
+  margin-bottom: 12px;
+  min-height: 90px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.display-history {
+  font-family: var(--display-font);
+  font-size: 13px;
+  color: var(--text-dim);
+  /* BUG FIX: line-height was 2px — text was completely clipped */
+  line-height: 1.4;
+  min-height: 18px;
+  word-break: break-all;
   text-align: right;
-  line-height:2px;
-  font-size: 27px;
-  font-family:monospace;
+  width: 100%;
 }
-	.numberblock {
-		display :flex;
-		flex-direction : column;
-		align-items : center;
-		justify-content : center;
-		margin :0 auto; 
-		}
-	button{
-		width : 50px;
-		height : 50px;
-		font-size : 20px;
-		margin: 5px;
-		border: 2px #000000 ;
-		border-radius: 5px ;
-		color: #2E2C76  ;
-		background-color :#A4B9D1;
-		cursor : pointer;
-		}
-   
+
+.display-result {
+  font-family: var(--display-font);
+  /* BUG FIX: line-height was 2px — text was clipped to 2 pixels */
+  font-size: clamp(24px, 8vw, 36px);
+  line-height: 1.1;
+  color: var(--text);
+  word-break: break-all;
+  text-align: right;
+  width: 100%;
+  transition: color 0.2s;
+}
+
+.display-result.error {
+  color: var(--error);
+  animation: shake 0.3s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25%       { transform: translateX(-6px); }
+  75%       { transform: translateX(6px); }
+}
+
+/* ── Keypad ── */
+.keypad {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  width: 100%;
+  max-width: 320px;
+}
+
+.keypad-row {
+  display: flex;
+  gap: var(--gap);
+  justify-content: center;
+}
+
+/* ── Buttons ── */
+/* BUG FIX: border was "2px #000000" — missing style keyword (solid) → invisible border */
+.btn {
+  flex: 1;
+  height: 58px;
+  font-size: 20px;
+  font-family: var(--ui-font);
+  font-weight: 600;
+  border: 1px solid var(--border);   /* was: "2px #000000" — no 'solid' → ignored */
+  border-radius: var(--radius);
+  cursor: pointer;
+  color: var(--text);
+  background: var(--num-bg);
+  transition: background 0.1s, transform 0.08s, box-shadow 0.1s;
+  user-select: none;
+  -webkit-user-select: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn:hover  { background: var(--num-hover); }
+.btn:active,
+.btn.pressed {
+  background: var(--num-active);
+  transform: scale(0.94);
+}
+
+/* Operator buttons */
+.btn-op {
+  background: var(--op-bg);
+  color: var(--op-text);
+  border-color: #1e3a5f;
+}
+.btn-op:hover   { background: var(--op-hover); }
+.btn-op.pressed { background: #1a2f42; }
+
+/* Function buttons (clear, backspace, brackets) */
+.btn-fn {
+  background: var(--fn-bg);
+  color: var(--fn-text);
+  border-color: #32204a;
+  font-size: 16px;
+}
+.btn-fn:hover   { background: var(--fn-hover); }
+
+/* Equals */
+.btn-eq {
+  background: var(--eq-bg);
+  color: var(--eq-text);
+  border-color: #004d40;
+  box-shadow: 0 2px 12px rgba(0, 105, 92, 0.35);
+}
+.btn-eq:hover   { background: var(--eq-hover); box-shadow: 0 4px 18px rgba(0, 121, 107, 0.5); }
+.btn-eq.pressed { transform: scale(0.92); }
+
+/* Wide zero button */
+.btn-wide { flex: 2.1; }
+
+/* Ripple effect */
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: white;
+  opacity: 0;
+  transition: opacity 0.15s;
+  border-radius: inherit;
+}
+.btn.pressed::after { opacity: 0.07; }
+
+/* ── Responsive: tighten on very small phones ── */
+@media (max-width: 340px) {
+  .btn { height: 50px; font-size: 18px; }
+  .keypad { gap: 6px; }
+  .keypad-row { gap: 6px; }
+}
