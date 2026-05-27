@@ -1,50 +1,74 @@
 <!DOCTYPE html>
-<html lang='en'>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Calculator</title>
-  <link href="style.css" rel="stylesheet">
-  <style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#1a1a2e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Calculator">
+  <meta name="description" content="Offline-capable calculator PWA">
 
-  </style>
+  <!-- BUG FIX: Added manifest link — required for PWA installability & offline hint -->
+  <link rel="manifest" href="manifest.json">
+
+  <title>Calculator</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1 id="heading">calculator</h1>
-  <h2 id="resultscreen"></h2>
-  <div class="numberblock">
-    <div style="display:flex">
-      <button id="cancelbtn">⌫</button>
-      <button id="clearbtn">C</button>
-      <button id="openbracket" value='(' > (</button>
-       <button id="closebracket" value=')'> )</button>
+  <div class="app-shell">
+    <header class="calc-header">
+      <span class="calc-title">CALC</span>
+      <span class="offline-badge" id="offlineBadge" aria-live="polite"></span>
+    </header>
+
+    <!-- Result display — two lines: expression history + current result -->
+    <div class="display" role="region" aria-label="Calculator display">
+      <div class="display-history" id="historyScreen" aria-label="Expression history"></div>
+      <div class="display-result" id="resultScreen" aria-label="Current input">0</div>
     </div>
-    <div >
-      <button id="sevenbtn" value='7' >7</button>
-      <button id="eightbtn" value='8' >8</button>
-      <button id="ninebtn" value='9' >9</button>
-       <button id="multiplybtn"value='*' >x</button>
-    </div>
-    <div >
-      <button id="fourbtn" value='4' >4</button>
-      <button id="fivebtn"value='5' >5</button>
-      <button id="sixbtn"value='6' >6</button>
-      <button id="dividebtn"value='/' >÷</button>
-    </div>
-    <div>
-      <button id="onebtn" value='1' >1</button>
-      <button id="twobtn"value='2' >2</button>
-      <button id="threebtn" value='3' >3</button>
-      <button id="minusbtn"value='-' >-</button>
-    </div>
-    <div >
-      <button id="zerobtn" value='0'>0</button>
-      <button id="pointbtn" value='.' >.</button>
-      <button id="equalbtn" value='=' >=</button>
-      <button id="plusbtn" value='+' >+</button>
+
+    <!-- BUG FIX: type="button" prevents accidental form submission in WebView -->
+    <div class="keypad" role="group" aria-label="Calculator buttons">
+
+      <div class="keypad-row">
+        <button type="button" id="cancelbtn"   class="btn btn-fn"   aria-label="Backspace">⌫</button>
+        <button type="button" id="clearbtn"    class="btn btn-fn"   aria-label="Clear">C</button>
+        <button type="button" id="openbracket" class="btn btn-fn"   value="(">(</button>
+        <button type="button" id="closebracket"class="btn btn-fn"   value=")">)</button>
+      </div>
+
+      <div class="keypad-row">
+        <button type="button" id="sevenbtn"    class="btn btn-num"  value="7">7</button>
+        <button type="button" id="eightbtn"    class="btn btn-num"  value="8">8</button>
+        <button type="button" id="ninebtn"     class="btn btn-num"  value="9">9</button>
+        <button type="button" id="multiplybtn" class="btn btn-op"   value="*">×</button>
+      </div>
+
+      <div class="keypad-row">
+        <button type="button" id="fourbtn"     class="btn btn-num"  value="4">4</button>
+        <button type="button" id="fivebtn"     class="btn btn-num"  value="5">5</button>
+        <button type="button" id="sixbtn"      class="btn btn-num"  value="6">6</button>
+        <button type="button" id="dividebtn"   class="btn btn-op"   value="/">÷</button>
+      </div>
+
+      <div class="keypad-row">
+        <button type="button" id="onebtn"      class="btn btn-num"  value="1">1</button>
+        <button type="button" id="twobtn"      class="btn btn-num"  value="2">2</button>
+        <button type="button" id="threebtn"    class="btn btn-num"  value="3">3</button>
+        <button type="button" id="minusbtn"    class="btn btn-op"   value="-">−</button>
+      </div>
+
+      <div class="keypad-row">
+        <button type="button" id="zerobtn"     class="btn btn-num btn-wide" value="0">0</button>
+        <button type="button" id="pointbtn"    class="btn btn-num"  value=".">.</button>
+        <button type="button" id="equalbtn"    class="btn btn-eq"   value="=">=</button>
+        <button type="button" id="plusbtn"     class="btn btn-op"   value="+">+</button>
+      </div>
+
     </div>
   </div>
-  <script src='main.js'></script>
- 
+
+  <script src="main.js"></script>
 </body>
 </html>
